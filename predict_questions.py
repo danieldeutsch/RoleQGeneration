@@ -128,8 +128,8 @@ if __name__ == "__main__":
     ap.add_argument("--infile", help="debug_file.jsonl")
     ap.add_argument("--outfile", help="name of the file you want to write the question to (jsonl format)")
     ap.add_argument("--transformation_model_path")
-    ap.add_argument("--device_number", default=0)
-    ap.add_argument("--with_adjuncts", default=False)
+    ap.add_argument("--device_number", default=0, type=int)
+    ap.add_argument("--with_adjuncts", action="store_true")
 
     main(ap.parse_args())
 
