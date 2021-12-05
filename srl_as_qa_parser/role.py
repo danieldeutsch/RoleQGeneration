@@ -1,4 +1,5 @@
 from typing import List
+from collections import defaultdict
 import sys
 import jsonlines
 
@@ -20,8 +21,19 @@ class PropBankRoleFinder:
         #     "role_sets": [
         #           {"sense_id": 1, "roles": [{"type": "ARG0", "desc": "agent"},
         #                                     {"type": "ARG1", "desc": "person kidnapped"}]}]}
-        self.pred_to_rolesets = {f"{prd['predicate']}-{prd['pos']}": prd['role_sets']
-                                 for prd in predicates}
+        # self.pred_to_rolesets = {f"{prd['predicate']}-{prd['pos']}": prd['role_sets']
+        #                          for prd in predicates}
+        self.pred_to_rolesets = defaultdict(list)
+        for prd in predicates:
+            predicate = prd['predicate']
+            for role_set in prd['role_sets']:
+                sense = int(role_set['sense_id'])
+                pos = role_set['pos']
+                key = f'{predicate}-{pos}'
+                self.pred_to_rolesets[key].append({
+                    'sense_id': sense,
+                    'roles': role_set['roles']
+                })
 
     def get_roles(self, predicate_lemma: str, pos="v", sense=-1) -> RoleSet:
         rolesets = self.pred_to_rolesets.get(f"{predicate_lemma}-{pos}", [])
